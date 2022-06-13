@@ -24,6 +24,7 @@ async fn main() -> io::Result<()> {
         App::new()
             .app_data(pool.clone())
             .service(controller::get_all_users)
+            .service(controller::debit_transaction)
             .service(hello_world)
     })
     .bind((config.host, config.port))?

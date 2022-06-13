@@ -11,8 +11,9 @@ pub struct User {
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "debit")]
 pub struct Debit {
-    id: i32,
-    amount: u32,
-    reason: u32,
-    uid: i32,
+    pub id: i32,
+    pub debit_amount: i32,
+    pub reason: String,
+    pub uid: i32,
+    //TODO:Add Date field here or search fields to make u32 in PG
 }
