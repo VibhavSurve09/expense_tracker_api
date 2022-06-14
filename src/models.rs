@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use tokio_pg_mapper_derive::PostgresMapper;
-
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "users")]
 pub struct User {
@@ -15,5 +14,5 @@ pub struct Debit {
     pub debit_amount: i32,
     pub reason: String,
     pub uid: i32,
-    //TODO:Add Date field here or search fields to make u32 in PG
+    pub transaction_date: String,
 }

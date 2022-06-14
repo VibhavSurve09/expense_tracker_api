@@ -10,8 +10,7 @@ create table debit (
     debit_amount integer,
     reason varchar(30),
     uid integer,
-    foreign key (uid) references users(uid)
-);
+    foreign key (uid) references users(uid),
+    transaction_date varchar(30)
+);  
 
-insert into  users  (name) values ('Vibhav'),('X');
-insert into debit (debit_amount,reason) values (500,'Drinks'), (600,'Clubs');
