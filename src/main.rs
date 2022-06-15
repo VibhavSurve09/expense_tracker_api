@@ -23,7 +23,6 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(pool.clone())
-            .service(controller::get_all_users)
             .service(controller::debit_transaction)
             .service(hello_world)
     })

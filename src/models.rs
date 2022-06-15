@@ -10,7 +10,6 @@ pub struct User {
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "debit")]
 pub struct Debit {
-    pub id: i32,
     pub debit_amount: i32,
     pub reason: String,
     pub uid: i32,
