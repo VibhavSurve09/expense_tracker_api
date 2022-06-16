@@ -8,6 +8,7 @@ mod config;
 mod controller;
 mod database;
 mod models;
+mod users;
 #[get("/")]
 async fn hello_world() -> impl Responder {
     HttpResponse::Ok().body("Hello World")
@@ -24,6 +25,7 @@ async fn main() -> io::Result<()> {
         App::new()
             .app_data(pool.clone())
             .service(controller::debit_transaction)
+            .service(users::controller::handle_signup)
             .service(hello_world)
     })
     .bind((config.host, config.port))?

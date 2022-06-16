@@ -2,7 +2,8 @@ drop table if exists users;
 drop table if exists debit;
 create table users (
     uid serial primary key,
-    name varchar(30)
+    uname varchar(30) UNIQUE NOT NULL,
+    password_ varchar(50) NOT NULL
 );
 
 create table debit (
