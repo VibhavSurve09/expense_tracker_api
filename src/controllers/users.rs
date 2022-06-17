@@ -9,10 +9,10 @@ pub async fn handle_signup(
     user_credentials: web::Json<User>,
 ) -> impl Responder {
     let client: Client = db_pool.lock().unwrap().get().await.unwrap();
-    let _user = crate::users::database::get_user_by_username(&client, &user_credentials).await;
+    let _user = crate::database::users::get_user_by_username(&client, &user_credentials).await;
     match _user {
         None => {
-            let new_user = crate::users::database::add_user(&client, &user_credentials)
+            let new_user = crate::database::users::add_user(&client, &user_credentials)
                 .await
                 .unwrap();
             HttpResponse::Ok().json(new_user)

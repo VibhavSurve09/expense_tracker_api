@@ -5,7 +5,7 @@ use std::io;
 use tokio_pg_mapper::FromTokioPostgresRow;
 
 pub async fn debit(client: Client, debit: web::Json<Debit>) -> Result<Debit, io::Error> {
-    let _stmt = include_str!("../sql/debit_transaction.sql");
+    let _stmt = include_str!("./sql/debit_transaction.sql");
     let _stmt = _stmt.replace("$table_fields", &Debit::sql_table_fields());
     let stmt = client.prepare(&_stmt).await.unwrap();
 

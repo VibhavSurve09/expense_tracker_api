@@ -5,10 +5,10 @@ use std::io;
 use std::sync::Mutex;
 use tokio_postgres::NoTls;
 mod config;
-mod controller;
+mod controllers;
 mod database;
 mod models;
-mod users;
+
 #[get("/")]
 async fn hello_world() -> impl Responder {
     HttpResponse::Ok().body("Hello World")
@@ -24,8 +24,8 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(pool.clone())
-            .service(controller::debit_transaction)
-            .service(users::controller::handle_signup)
+            .service(controllers::debit::debit_transaction)
+            .service(controllers::users::handle_signup)
             .service(hello_world)
     })
     .bind((config.host, config.port))?

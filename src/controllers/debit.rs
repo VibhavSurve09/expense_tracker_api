@@ -15,7 +15,7 @@ pub async fn debit_transaction(
         .get()
         .await
         .expect("Error occured while connecting with database");
-    let res = crate::database::debit(client, debit_).await;
+    let res = crate::database::debit::debit(client, debit_).await;
     match res {
         Ok(all_users) => HttpResponse::Ok().json(all_users),
         _ => HttpResponse::InternalServerError().into(),
