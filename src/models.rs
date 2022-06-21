@@ -3,8 +3,8 @@ use tokio_pg_mapper_derive::PostgresMapper;
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "users")]
 pub struct User {
+    pub tid: i32,
     pub uname: String,
-    pub password_: String,
 }
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "users")]

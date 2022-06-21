@@ -26,7 +26,7 @@ pub async fn add_user(client: &Client, user: &web::Json<User>) -> Result<User, i
     let stmt = client.prepare(&_stmt).await.unwrap();
 
     let new_user: User = client
-        .query(&stmt, &[&user.uname, &user.password_])
+        .query(&stmt, &[&user.tid, &user.uname])
         .await
         .expect("Something went wrong while pushing user")
         .iter()
