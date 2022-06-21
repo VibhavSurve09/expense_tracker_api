@@ -23,3 +23,10 @@ pub struct Debit {
 pub struct Status {
     message: String,
 }
+
+#[derive(Serialize, Deserialize, PostgresMapper, Debug)]
+#[pg_mapper(table = "debit")]
+pub struct ShowDebit {
+    pub id: i32,
+    pub reason: String,
+}
