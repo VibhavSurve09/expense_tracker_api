@@ -19,14 +19,26 @@ pub struct Debit {
     pub uid: i32,
     pub transaction_date: String,
 }
-#[derive(Serialize)]
-pub struct Status {
-    message: String,
-}
 
 #[derive(Serialize, Deserialize, PostgresMapper, Debug)]
 #[pg_mapper(table = "debit")]
 pub struct ShowDebit {
     pub id: i32,
     pub reason: String,
+}
+
+#[derive(Serialize, Deserialize, PostgresMapper)]
+#[pg_mapper(table = "credit")]
+pub struct Credit {
+    pub credit_amount: i32,
+    pub reason: String,
+    pub uid: i32,
+    pub transaction_date: String,
+}
+
+#[derive(Serialize, Deserialize, PostgresMapper)]
+#[pg_mapper(table = "credit")]
+pub struct ShowCredit {
+    pub reason: String,
+    pub uid: i32,
 }

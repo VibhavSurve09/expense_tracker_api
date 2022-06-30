@@ -14,3 +14,12 @@ create table debit (
     transaction_date varchar(30)
 );  
 
+create table credit (
+    id serial primary key,
+    credit_amount integer,
+    reason varchar(30),
+    uid integer,
+    foreign key (uid) references users(tid),
+    transaction_date varchar(30)
+);  
+
