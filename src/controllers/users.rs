@@ -1,4 +1,4 @@
-use crate::models::{Status, User};
+use crate::models::User;
 use actix_web::{get, http, post, web, HttpResponse, Responder};
 use deadpool_postgres::{Client, Pool};
 use std::sync::Mutex;

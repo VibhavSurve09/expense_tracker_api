@@ -1,4 +1,4 @@
-use crate::models::{Debit, ShowDebit, User};
+use crate::models::{Debit, ShowDebit};
 use actix_web::web;
 use deadpool_postgres::Client;
 use std::io;
