@@ -37,6 +37,7 @@ async fn main() -> io::Result<()> {
             .app_data(pool.clone())
             .service(controllers::debit::debit_transaction)
             .service(controllers::users::handle_signup)
+            .service(controllers::credit::credit_transaction)
             .service(hello_world)
     })
     .bind((config.host, config.port))?

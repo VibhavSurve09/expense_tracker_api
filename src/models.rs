@@ -40,5 +40,5 @@ pub struct Credit {
 #[pg_mapper(table = "credit")]
 pub struct ShowCredit {
     pub reason: String,
-    pub uid: i32,
+    pub id: i32,
 }

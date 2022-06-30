@@ -1,5 +1,6 @@
 drop table if exists users;
 drop table if exists debit;
+drop table if exists credit;
 create table users (
     tid integer primary key,
     uname varchar(30) UNIQUE NOT NULL

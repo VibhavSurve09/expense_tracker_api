@@ -9,6 +9,7 @@ pub async fn credit_transaction(
     db_pool: web::Data<Mutex<Pool>>,
     credit: web::Json<Credit>,
 ) -> impl Responder {
+    println!("Crediting..");
     let client: Client = db_pool
         .lock()
         .unwrap()
@@ -17,7 +18,7 @@ pub async fn credit_transaction(
         .expect("Error occured while connecting with database");
     let res = crate::database::credit::credit(client, credit).await;
     match res {
-        Ok(all_users) => HttpResponse::Ok().json(all_users),
+        Ok(transaction_) => HttpResponse::Ok().json(transaction_),
         _ => HttpResponse::InternalServerError().into(),
     }
 }

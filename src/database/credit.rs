@@ -4,7 +4,7 @@ use deadpool_postgres::Client;
 use std::io;
 use tokio_pg_mapper::FromTokioPostgresRow;
 
-pub async fn credit(client: Client, credit: web::Json<Credit>) -> Result<ShowDebit, io::Error> {
+pub async fn credit(client: Client, credit: web::Json<Credit>) -> Result<ShowCredit, io::Error> {
     let _stmt = include_str!("./sql/credit_transaction.sql");
     let _stmt = _stmt.replace("$table_fields", &ShowCredit::sql_table_fields());
     let stmt = client.prepare(&_stmt).await.unwrap();
