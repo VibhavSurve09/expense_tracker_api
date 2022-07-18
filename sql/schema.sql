@@ -3,7 +3,8 @@ drop table if exists debit;
 drop table if exists credit;
 create table users (
     tid integer primary key,
-    uname varchar(30) UNIQUE NOT NULL
+    uname varchar(30) UNIQUE NOT NULL,
+    email varchar(30) UNIQUE
 );
 
 create table debit (

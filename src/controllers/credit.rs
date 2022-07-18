@@ -9,7 +9,6 @@ pub async fn credit_transaction(
     db_pool: web::Data<Mutex<Pool>>,
     credit: web::Json<Credit>,
 ) -> impl Responder {
-    println!("Crediting..");
     let client: Client = db_pool
         .lock()
         .unwrap()
