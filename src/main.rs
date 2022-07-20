@@ -10,7 +10,7 @@ mod controllers;
 mod database;
 mod models;
 use std::env;
-
+mod errors;
 #[get("/")]
 async fn hello_world() -> impl Responder {
     HttpResponse::Ok().body("Hello World")
@@ -39,6 +39,7 @@ async fn main() -> io::Result<()> {
             .service(controllers::users::handle_signup)
             .service(controllers::credit::credit_transaction)
             .service(hello_world)
+            .service(controllers::users::handle_login)
     })
     .bind((config.host, config.port))?
     .run()

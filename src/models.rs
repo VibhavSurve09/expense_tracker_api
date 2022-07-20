@@ -6,6 +6,13 @@ pub struct User {
     pub tid: i32,
     pub uname: String,
 }
+#[derive(Serialize, Deserialize, PostgresMapper, Debug)]
+#[pg_mapper(table = "users")]
+pub struct WebUser {
+    pub tid: i32,
+    pub uname: String,
+    pub email: Option<String>,
+}
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "users")]
 pub struct ShowUser {
@@ -41,4 +48,18 @@ pub struct Credit {
 pub struct ShowCredit {
     pub reason: String,
     pub id: i32,
+}
+#[derive(Serialize, Deserialize)]
+pub struct Response {
+    status_code: u16,
+    message: String,
+}
+
+impl Response {
+    pub fn new(code: u16, message: String) -> Self {
+        Response {
+            status_code: code,
+            message,
+        }
+    }
 }
