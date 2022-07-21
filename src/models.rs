@@ -50,16 +50,18 @@ pub struct ShowCredit {
     pub id: i32,
 }
 #[derive(Serialize, Deserialize)]
-pub struct Response {
+pub struct WebUserResponse {
     status_code: u16,
     message: String,
+    user: Option<WebUser>,
 }
 
-impl Response {
-    pub fn new(code: u16, message: String) -> Self {
-        Response {
+impl WebUserResponse {
+    pub fn new(code: u16, message: String, user: Option<WebUser>) -> Self {
+        WebUserResponse {
             status_code: code,
             message,
+            user,
         }
     }
 }

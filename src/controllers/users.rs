@@ -1,4 +1,4 @@
-use crate::models::{Response, ShowUser, User};
+use crate::models::{ShowUser, User, WebUserResponse};
 use actix_web::{get, http, post, web, HttpResponse, Responder};
 use deadpool_postgres::{Client, Pool};
 use std::sync::Mutex;
@@ -28,14 +28,16 @@ pub async fn handle_login(
     db_pool: web::Data<Mutex<Pool>>,
     username: web::Json<ShowUser>,
 ) -> impl Responder {
-    println!("Requesting..");
     let client: Client = db_pool.lock().unwrap().get().await.unwrap();
     let user = crate::database::users::handle_login(&client, &username).await;
     match user {
-        Ok(credentials) => return web::Json(credentials),
+        Ok(credentials) => {
+            let response = WebUserResponse::new(200, "success".to_string(), Some(credentials));
+            return web::Json(response);
+        }
         _ => {
-            let response = Response::new(401, "Unauthorized".to_string());
-            return web::Json(user.unwrap());
+            let response = WebUserResponse::new(401, "Unauthorized".to_string(), None);
+            return web::Json(response);
         }
     }
 }
