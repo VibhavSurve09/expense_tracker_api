@@ -30,11 +30,16 @@ async fn main() -> io::Result<()> {
                 Cors::default() // <- Construct CORS middleware builder
                     .allowed_origin(env::var(env_front_end).unwrap().as_str())
                     .allowed_methods(vec!["GET", "POST"])
-                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-                    .allowed_header(http::header::CONTENT_TYPE)
-                    .max_age(3600),
+                    .allowed_headers(vec![
+                        http::header::AUTHORIZATION,
+                        http::header::ACCEPT,
+                        http::header::SET_COOKIE,
+                        http::header::COOKIE,
+                        http::header::CONTENT_TYPE,
+                    ]),
             )
             .app_data(pool.clone())
+            .service(controllers::users::handle_change_email)
             .service(controllers::debit::debit_transaction)
             .service(controllers::users::handle_signup)
             .service(controllers::credit::credit_transaction)

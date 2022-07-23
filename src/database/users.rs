@@ -1,6 +1,6 @@
 use crate::errors::MyError;
 use crate::models::{ShowUser, User, WebUser};
-use actix_web::web;
+use actix_web::{cookie::Cookie, web};
 use deadpool_postgres::Client;
 use std::io;
 use tokio_pg_mapper::FromTokioPostgresRow;
@@ -53,4 +53,15 @@ pub async fn handle_login(client: &Client, user: &web::Json<ShowUser>) -> Result
         .collect::<Vec<WebUser>>()
         .pop()
         .ok_or(MyError::NotFound) // more applicable for SELECTs
+}
+
+pub async fn update_email(
+    client: &Client,
+    email: &web::Json<crate::controllers::users::Email>,
+    tid: i32,
+) {
+    println!("Email is {} and tid is {}", email.email, tid);
+    let statement = include_str!("./sql/update_email.sql");
+    let statement = client.prepare(&statement).await.unwrap();
+    client.query(&statement, &[&email.email, &tid]).await;
 }
