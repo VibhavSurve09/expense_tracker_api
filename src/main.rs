@@ -30,13 +30,9 @@ async fn main() -> io::Result<()> {
                 Cors::default() // <- Construct CORS middleware builder
                     .allowed_origin(env::var(env_front_end).unwrap().as_str())
                     .allowed_methods(vec!["GET", "POST"])
-                    .allowed_headers(vec![
-                        http::header::AUTHORIZATION,
-                        http::header::ACCEPT,
-                        http::header::SET_COOKIE,
-                        http::header::COOKIE,
-                        http::header::CONTENT_TYPE,
-                    ]),
+                    .allow_any_header()
+                    .supports_credentials()
+                    .expose_any_header(),
             )
             .app_data(pool.clone())
             .service(controllers::users::handle_change_email)
