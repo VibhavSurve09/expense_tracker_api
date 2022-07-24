@@ -60,11 +60,11 @@ pub async fn handle_change_email(
 ) -> HttpResponse {
     let client: Client = db_pool.lock().unwrap().get().await.unwrap();
     let cookie_tid = req.cookie("et_tid");
-    println!("{:?}", cookie_tid);
     match cookie_tid {
         Some(tid) => {
-            let tid: i32 = tid.to_string().parse().unwrap();
-            crate::database::users::update_email(&client, &email, tid).await;
+            let et_tid = tid.value();
+            crate::database::users::update_email(&client, &email, et_tid.parse::<i32>().unwrap())
+                .await;
             return HttpResponse::Ok().finish();
         }
         _ => {

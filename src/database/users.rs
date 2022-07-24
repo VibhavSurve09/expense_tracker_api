@@ -60,7 +60,6 @@ pub async fn update_email(
     email: &web::Json<crate::controllers::users::Email>,
     tid: i32,
 ) {
-    println!("Email is {} and tid is {}", email.email, tid);
     let statement = include_str!("./sql/update_email.sql");
     let statement = client.prepare(&statement).await.unwrap();
     client.query(&statement, &[&email.email, &tid]).await;
