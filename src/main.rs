@@ -10,6 +10,8 @@ mod controllers;
 mod database;
 mod models;
 use std::env;
+extern crate redis;
+use redis::Commands;
 mod errors;
 #[get("/")]
 async fn hello_world() -> impl Responder {
@@ -24,6 +26,10 @@ async fn main() -> io::Result<()> {
         config.pg.create_pool(Some(Runtime::Tokio1), NoTls).unwrap(),
     ));
     let env_front_end = "FRONT_END";
+    let con_uri: String = dotenv::var("REDIS_URI").unwrap();
+
+    let client = redis::Client::open(con_uri).unwrap();
+    let connection = web::Data::new(Mutex::new(client.get_connection().unwrap()));
     HttpServer::new(move || {
         App::new()
             .wrap(
@@ -35,6 +41,7 @@ async fn main() -> io::Result<()> {
                     .expose_any_header(),
             )
             .app_data(pool.clone())
+            .app_data(connection.clone())
             .service(controllers::users::handle_change_email)
             .service(controllers::debit::debit_transaction)
             .service(controllers::users::handle_signup)
