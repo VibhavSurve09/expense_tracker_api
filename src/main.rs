@@ -48,6 +48,7 @@ async fn main() -> io::Result<()> {
             .service(controllers::credit::credit_transaction)
             .service(hello_world)
             .service(controllers::users::handle_login)
+            .service(controllers::credit::get_credit)
     })
     .bind((config.host, config.port))?
     .run()

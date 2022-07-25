@@ -1,0 +1,1 @@
+SELECT * FROM credit WHERE uid=$1 ORDER BY to_date(transaction_date,'DD-MM-YYYY');

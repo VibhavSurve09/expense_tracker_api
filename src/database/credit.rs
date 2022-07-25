@@ -1,3 +1,4 @@
+use crate::controllers::credit::WebCredit;
 use crate::models::{Credit, ShowCredit};
 use actix_web::web;
 use deadpool_postgres::Client;
@@ -26,5 +27,19 @@ pub async fn credit(client: Client, credit: web::Json<Credit>) -> Result<ShowCre
         .collect::<Vec<ShowCredit>>()
         .pop()
         .unwrap();
+    Ok(recent)
+}
+
+pub async fn get_credit(client: Client, tid: i32) -> Result<Vec<WebCredit>, io::Error> {
+    let _stmt = include_str!("./sql/get_credit.sql");
+    let stmt = client.prepare(&_stmt).await.unwrap();
+
+    let recent: Vec<WebCredit> = client
+        .query(&stmt, &[&tid])
+        .await
+        .expect("Error while credit")
+        .iter()
+        .map(|row| WebCredit::from_row_ref(row).unwrap())
+        .collect::<Vec<WebCredit>>();
     Ok(recent)
 }
