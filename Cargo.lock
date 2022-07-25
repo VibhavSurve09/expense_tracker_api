@@ -571,6 +571,7 @@ dependencies = [
  "dotenv",
  "redis",
  "serde",
+ "serde_json",
  "tokio-pg-mapper",
  "tokio-pg-mapper-derive",
  "tokio-postgres",
