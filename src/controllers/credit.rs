@@ -24,7 +24,7 @@ pub struct WebCredit {
     pub transaction_date: String,
     pub id: i32,
 }
-const TTL: usize = 120;
+const TIME_TO_LIVE: usize = 180;
 #[post("/credit")]
 pub async fn credit_transaction(
     db_pool: web::Data<Mutex<Pool>>,
@@ -43,18 +43,22 @@ pub async fn credit_transaction(
     }
 }
 
-#[get("/credit")]
+#[get("/credit/{pageNum}")]
 pub async fn get_credit(
     db_pool: web::Data<Mutex<Pool>>,
     redit_client: web::Data<Mutex<redis::Connection>>,
     req: HttpRequest,
+    path: web::Path<String>,
 ) -> HttpResponse {
     let cookie = req.cookie("et_tid");
+    let page_no = path.into_inner().trim().parse::<i64>().unwrap() - 1;
+    let offset_val: i64 = page_no * 10;
     match (cookie) {
         Some(_cookie) => {
             let mut redis = redit_client.lock().unwrap();
             let tid_str = _cookie.value().to_string();
-            let key = tid_str + "_credit";
+            let page_num_str = page_no.to_string();
+            let key = tid_str + "_credit_page_num=" + page_num_str.as_str();
             let cache_response: Result<String, redis::RedisError> = redis.get(key.clone());
             match cache_response {
                 Ok(res) => {
@@ -70,12 +74,12 @@ pub async fn get_credit(
                 _ => {
                     let tid_num: i32 = _cookie.value().parse().unwrap();
                     let pg_client: Client = db_pool.lock().unwrap().get().await.unwrap();
-                    let res = crate::database::credit::get_credit(pg_client, tid_num)
+                    let res = crate::database::credit::get_credit(pg_client, tid_num, offset_val)
                         .await
                         .unwrap();
                     let string_res = serde_json::to_string(&res).unwrap();
                     let _: () = redis.set(key.clone(), string_res).unwrap();
-                    let _: () = redis.expire(key, TTL).unwrap();
+                    let _: () = redis.expire(key, TIME_TO_LIVE).unwrap();
                     let response = WebCreditResponse {
                         status: 200,
                         message: "success".to_string(),

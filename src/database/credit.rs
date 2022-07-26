@@ -30,12 +30,16 @@ pub async fn credit(client: Client, credit: web::Json<Credit>) -> Result<ShowCre
     Ok(recent)
 }
 
-pub async fn get_credit(client: Client, tid: i32) -> Result<Vec<WebCredit>, io::Error> {
+pub async fn get_credit(
+    client: Client,
+    tid: i32,
+    offset_val: i64,
+) -> Result<Vec<WebCredit>, io::Error> {
     let _stmt = include_str!("./sql/get_credit.sql");
     let stmt = client.prepare(&_stmt).await.unwrap();
-
+    //Int8 is bigint in psql which is i64 in different languages
     let recent: Vec<WebCredit> = client
-        .query(&stmt, &[&tid])
+        .query(&stmt, &[&tid, &offset_val])
         .await
         .expect("Error while credit")
         .iter()
