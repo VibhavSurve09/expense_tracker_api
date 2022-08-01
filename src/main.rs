@@ -35,7 +35,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 Cors::default() // <- Construct CORS middleware builder
                     .allowed_origin(env::var(env_front_end).unwrap().as_str())
-                    .allowed_methods(vec!["GET", "POST"])
+                    .allow_any_method()
                     .allow_any_header()
                     .supports_credentials()
                     .expose_any_header(),
@@ -49,6 +49,7 @@ async fn main() -> io::Result<()> {
             .service(hello_world)
             .service(controllers::users::handle_login)
             .service(controllers::credit::get_credit)
+            .service(controllers::debit::delete_debit)
             .service(controllers::debit::get_debit)
     })
     .bind((config.host, config.port))?

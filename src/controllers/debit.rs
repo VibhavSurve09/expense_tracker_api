@@ -1,5 +1,5 @@
 use crate::models::{Debit, User};
-use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder};
+use actix_web::{delete, get, post, web, HttpRequest, HttpResponse, Responder};
 use chrono::prelude::*;
 use deadpool_postgres::{Client, Pool};
 use serde::{Deserialize, Serialize};
@@ -96,6 +96,27 @@ pub async fn get_debit(
                 data: None,
             };
             return HttpResponse::Ok().json(response);
+        }
+    }
+}
+
+#[delete("/debit/delete/{id}")]
+pub async fn delete_debit(
+    db_pool: web::Data<Mutex<Pool>>,
+    request: HttpRequest,
+    id: web::Path<String>,
+) -> HttpResponse {
+    let cookie = request.cookie("et_tid");
+    let pg_client: Client = db_pool.lock().unwrap().get().await.unwrap();
+    match cookie {
+        Some(cookie) => {
+            let debit_id: i32 = id.into_inner().trim().parse().unwrap();
+            let cookie_val: i32 = cookie.value().to_string().trim().parse().unwrap();
+            crate::database::debit::delete_debit(pg_client, debit_id, cookie_val).await;
+            return HttpResponse::Ok().finish();
+        }
+        None => {
+            return HttpResponse::Forbidden().finish();
         }
     }
 }

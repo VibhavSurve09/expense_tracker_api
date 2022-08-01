@@ -47,3 +47,10 @@ pub async fn get_debit(
         .collect::<Vec<WebDebit>>();
     Ok(recent)
 }
+
+pub async fn delete_debit(client: Client, debit_id: i32, tid: i32) {
+    let _stmt = include_str!("./sql/delete_debit_transaction.sql");
+    println!("Deleting..DB,{}", debit_id);
+    let stmt = client.prepare(&_stmt).await.unwrap();
+    client.query(&stmt, &[&debit_id, &tid]).await;
+}
