@@ -1,0 +1,1 @@
+SELECT * FROM debit WHERE uid=$1 ORDER BY to_date(transaction_date,'DD-MM-YYYY') DESC OFFSET $2 ROWS FETCH NEXT 10 ROWS ONLY;

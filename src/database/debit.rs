@@ -1,3 +1,4 @@
+use crate::controllers::debit::WebDebit;
 use crate::models::{Debit, ShowDebit};
 use actix_web::web;
 use deadpool_postgres::Client;
@@ -26,5 +27,23 @@ pub async fn debit(client: Client, debit: web::Json<Debit>) -> Result<ShowDebit,
         .collect::<Vec<ShowDebit>>()
         .pop()
         .unwrap();
+    Ok(recent)
+}
+
+pub async fn get_debit(
+    client: Client,
+    tid: i32,
+    offset_val: i64,
+) -> Result<Vec<WebDebit>, io::Error> {
+    let _stmt = include_str!("./sql/get_debit.sql");
+    let stmt = client.prepare(&_stmt).await.unwrap();
+    //Int8 is bigint in psql which is i64 in different languages
+    let recent: Vec<WebDebit> = client
+        .query(&stmt, &[&tid, &offset_val])
+        .await
+        .expect("Error while credit")
+        .iter()
+        .map(|row| WebDebit::from_row_ref(row).unwrap())
+        .collect::<Vec<WebDebit>>();
     Ok(recent)
 }
