@@ -51,6 +51,7 @@ async fn main() -> io::Result<()> {
             .service(controllers::credit::get_credit)
             .service(controllers::debit::delete_debit)
             .service(controllers::debit::get_debit)
+            .service(controllers::credit::delete_credit)
     })
     .bind((config.host, config.port))?
     .run()

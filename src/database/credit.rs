@@ -47,3 +47,8 @@ pub async fn get_credit(
         .collect::<Vec<WebCredit>>();
     Ok(recent)
 }
+pub async fn delete_credit(client: Client, debit_id: i32, tid: i32) {
+    let _stmt = include_str!("./sql/delete_credit_transaction.sql");
+    let stmt = client.prepare(&_stmt).await.unwrap();
+    client.query(&stmt, &[&debit_id, &tid]).await;
+}

@@ -1,5 +1,5 @@
 use crate::models::{Credit, User};
-use actix_web::{get, post, web, HttpRequest, HttpResponse, Responder};
+use actix_web::{delete, get, post, web, HttpRequest, HttpResponse, Responder};
 use chrono::prelude::*;
 use deadpool_postgres::{Client, Pool};
 use serde::{Deserialize, Serialize};
@@ -96,6 +96,27 @@ pub async fn get_credit(
                 data: None,
             };
             return HttpResponse::Ok().json(response);
+        }
+    }
+}
+
+#[delete("/credit/delete/{id}")]
+pub async fn delete_credit(
+    db_pool: web::Data<Mutex<Pool>>,
+    request: HttpRequest,
+    id: web::Path<String>,
+) -> HttpResponse {
+    let cookie = request.cookie("et_tid");
+    let pg_client: Client = db_pool.lock().unwrap().get().await.unwrap();
+    match cookie {
+        Some(cookie) => {
+            let credit_id: i32 = id.into_inner().trim().parse().unwrap();
+            let cookie_val: i32 = cookie.value().to_string().trim().parse().unwrap();
+            crate::database::credit::delete_credit(pg_client, credit_id, cookie_val).await;
+            return HttpResponse::Ok().finish();
+        }
+        None => {
+            return HttpResponse::Forbidden().finish();
         }
     }
 }

@@ -1,0 +1,1 @@
+DELETE FROM credit where id=$1 and uid=$2;
