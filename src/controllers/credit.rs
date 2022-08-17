@@ -14,7 +14,12 @@ struct WebCreditResponse {
     pub message: String,
     pub data: Option<Vec<WebCredit>>,
 }
-
+#[derive(Serialize, Deserialize)]
+pub struct CreditUpdateSchema {
+    pub id: i32,
+    pub message: String,
+    pub credit_amount: i32,
+}
 #[derive(Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "credit")]
 pub struct WebCredit {
@@ -117,6 +122,50 @@ pub async fn delete_credit(
         }
         None => {
             return HttpResponse::Forbidden().finish();
+        }
+    }
+}
+
+#[post("/credit/update")]
+pub async fn update_credit(
+    db_pool: web::Data<Mutex<Pool>>,
+    request: HttpRequest,
+    transaction: web::Json<CreditUpdateSchema>,
+) -> HttpResponse {
+    let cookie = request.cookie("et_tid");
+    let pg_client: Client = db_pool.lock().unwrap().get().await.unwrap();
+    match cookie {
+        Some(cookie_) => {
+            let cookie_val: i32 = cookie_.value().to_string().trim().parse().unwrap();
+            let res = crate::database::credit::update_credit(
+                pg_client,
+                transaction.into_inner(),
+                cookie_val,
+            )
+            .await;
+            if let Ok(valid_update) = res {
+                let new_res = WebCreditResponse {
+                    status: 201,
+                    message: "success".to_string(),
+                    data: Some(valid_update),
+                };
+                return HttpResponse::Ok().json(new_res);
+            } else {
+                let new_res = WebCreditResponse {
+                    status: 400,
+                    message: "fail".to_string(),
+                    data: None,
+                };
+                return HttpResponse::Ok().json(new_res);
+            }
+        }
+        _ => {
+            let new_res = WebCreditResponse {
+                status: 400,
+                message: "fail".to_string(),
+                data: None,
+            };
+            return HttpResponse::Ok().json(new_res);
         }
     }
 }

@@ -1,0 +1,1 @@
+UPDATE credit SET credit_amount=$1, reason=$2 WHERE id=$3 and uid=$4;

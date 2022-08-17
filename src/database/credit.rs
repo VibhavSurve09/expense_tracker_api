@@ -1,4 +1,4 @@
-use crate::controllers::credit::WebCredit;
+use crate::controllers::credit::{CreditUpdateSchema, WebCredit};
 use crate::models::{Credit, ShowCredit};
 use actix_web::web;
 use deadpool_postgres::Client;
@@ -51,4 +51,25 @@ pub async fn delete_credit(client: Client, debit_id: i32, tid: i32) {
     let _stmt = include_str!("./sql/delete_credit_transaction.sql");
     let stmt = client.prepare(&_stmt).await.unwrap();
     client.query(&stmt, &[&debit_id, &tid]).await;
+}
+
+pub async fn update_credit(
+    client: Client,
+    data: CreditUpdateSchema,
+    cookie: i32,
+) -> Result<Vec<WebCredit>, ()> {
+    let _stmt = include_str!("./sql/update_credit.sql");
+    let stmt = client.prepare(&_stmt).await.unwrap();
+    let transaction: Vec<WebCredit> = client
+        .query(
+            &stmt,
+            &[&data.credit_amount, &data.message, &data.id, &cookie],
+        )
+        .await
+        .expect("Error while updating debit")
+        .iter()
+        .map(|row| WebCredit::from_row_ref(row).unwrap())
+        .collect::<Vec<WebCredit>>();
+
+    return Ok(transaction);
 }

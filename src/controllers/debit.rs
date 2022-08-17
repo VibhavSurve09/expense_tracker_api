@@ -132,7 +132,6 @@ pub async fn update_debit(
     request: HttpRequest,
     transaction: web::Json<DebitUpdateSchema>,
 ) -> HttpResponse {
-    println!("Working...");
     let cookie = request.cookie("et_tid");
     let pg_client: Client = db_pool.lock().unwrap().get().await.unwrap();
     match cookie {
